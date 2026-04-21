@@ -7,3 +7,6 @@ models/*.pkl
 Thumbs.db
 .vscode/
 .idea/
+# Fichiers temporaires matplotlib
+*.png
+!figures/*.png
