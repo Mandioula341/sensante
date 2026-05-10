@@ -58,6 +58,11 @@ print(f"Nombre d'arbres : {model.n_estimators}")
 print(f"Nombre de features : {model.n_features_in_}")
 print(f"Classes : {list(model.classes_)}")
 
+# Affichage de l'importance des variables
+importances = model.feature_importances_
+print("\n--- Importance des features ---")
+for name, imp in sorted(zip(feature_cols, importances), key=lambda x: x[1], reverse=True):
+    print(f"{name:20s} : {imp:.3f}")
 
 
 # Predire sur les donnees de test
@@ -165,10 +170,27 @@ features = [
     int( nouveau_patient ['maux_tete']) ,
     region_enc,
 ]
+
+
+# Exemple de tests rapides (à adapter selon vos encodeurs)
+test_patients = [
+    [22, 1, 37.0, 110, 0, 0, 0, 0], # Jeune, sain
+    [45, 0, 40.5, 130, 1, 1, 1, 0], # Adulte, forte fièvre (Palu)
+    [75, 1, 38.2, 140, 1, 0, 0, 0]  # Âgé, toux (Grippe ?)
+]
+test_df = pd.DataFrame(test_patients, columns=feature_cols)
+predictions = model.predict(test_df)
+print("\n--- RÉSULTATS DES TESTS RAPIDES ---")
+print(f"\nPrédictions tests : {predictions}")
+
+features_df = pd.DataFrame([features], columns=feature_cols)
+
 # Predire
-diagnostic = model_loaded.predict ([ features ]) [0]
-probas = model_loaded.predict_proba ([ features ]) [0]
-proba_max = probas.max ()
+
+diagnostic = model_loaded.predict(features_df)[0]
+probas = model_loaded.predict_proba(features_df)[0]
+proba_max = probas.max()
+
 print ( f"\n- - - Resultat du pre - diagnostic ---")
 print ( f" Patient : {nouveau_patient ['sexe']} , {nouveau_patient ['age']} ans")
 print ( f" Diagnostic : {diagnostic }")
